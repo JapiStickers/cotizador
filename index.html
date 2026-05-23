@@ -242,6 +242,7 @@ textarea.notas-inp{resize:none;min-height:90px;line-height:1.6}
   <button class="btn-next" id="btn-next" onclick="goNext()">Siguiente →</button>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 const PLANTILLA_AREA=4410;
 const PRESETS_STD=[{l:'4×4 cm',w:4,h:4},{l:'5×5 cm',w:5,h:5},{l:'5×9 cm',w:5,h:9},{l:'7×7 cm',w:7,h:7},{l:'10×10 cm',w:10,h:10}];
@@ -482,55 +483,53 @@ function copiarCot(){
   });
 }
 
-function roundRect(ctx,x,y,w,h,r){
-  ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
-  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);
-  ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
-}
-
 function generarImagen(){
-  const canvas=document.getElementById('cot-canvas');
-  const W=800,H=520;canvas.width=W;canvas.height=H;
-  const ctx=canvas.getContext('2d');
-  const grad=ctx.createLinearGradient(0,0,W,H);
-  grad.addColorStop(0,'#1f1800');grad.addColorStop(1,'#0a0a0a');
-  ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
-  ctx.strokeStyle='rgba(245,197,24,0.3)';ctx.lineWidth=2;ctx.strokeRect(1,1,W-2,H-2);
-  ctx.fillStyle='rgba(245,197,24,0.08)';ctx.fillRect(0,0,W,70);
-  ctx.fillStyle='#F5C518';ctx.font='900 22px sans-serif';ctx.fillText('JAPI STICKERS',30,44);
-  ctx.fillStyle='#888';ctx.font='600 12px sans-serif';ctx.fillText('Convierte a tus clientes en embajadores de tu marca',30,62);
-  ctx.fillStyle='#F5C518';ctx.font='900 72px sans-serif';ctx.fillText(document.getElementById('r-total').textContent,30,170);
-  ctx.fillStyle='#888';ctx.font='600 14px sans-serif';ctx.fillText(document.getElementById('r-unit').textContent,30,195);
-  ctx.strokeStyle='rgba(245,197,24,0.2)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(30,215);ctx.lineTo(W-30,215);ctx.stroke();
-  const detalles=[
-    ['Producto',document.getElementById('r-producto').textContent],
-    ['Acabado',document.getElementById('r-acabado').textContent],
-    ['Tamaño',document.getElementById('r-tam').textContent],
-    ['Cantidad',document.getElementById('r-cant').textContent],
-    ['Plantillas',document.getElementById('r-plant').textContent],
-    ['Envío',document.getElementById('r-envio').textContent],
-  ];
-  if(document.getElementById('r-subtotal-row').style.display!=='none'){
-    detalles.push(['Sin descuento',document.getElementById('r-subtotal').textContent]);
-    detalles.push(['Descuento 15%',document.getElementById('r-ahorro').textContent]);
-  }
-  let y=250;
-  detalles.forEach(([k,v])=>{
-    ctx.fillStyle='#888';ctx.font='600 13px sans-serif';ctx.fillText(k,30,y);
-    ctx.fillStyle=k==='Descuento 15%'?'#4ade80':'#F5F5F5';ctx.font='700 13px sans-serif';ctx.fillText(v,200,y);
-    y+=28;
+  // Capturar solo el contenido del resultado sin botones
+  const elementos = ['result-hero','result-details','badges-stack'];
+  
+  // Crear contenedor temporal para captura
+  const wrapper = document.createElement('div');
+  wrapper.style.cssText = 'position:fixed;left:-9999px;top:0;width:430px;background:#0A0A0A;padding:1.5rem;display:flex;flex-direction:column;gap:1.25rem;font-family:Montserrat,system-ui,sans-serif';
+  
+  // Clonar secciones
+  const hero = document.querySelector('.result-hero').cloneNode(true);
+  const details = document.querySelector('.result-details').cloneNode(true);
+  const badges = document.querySelector('.badges-stack').cloneNode(true);
+  
+  // Agregar marca de agua
+  const marca = document.createElement('div');
+  marca.style.cssText = 'text-align:center;font-size:0.7rem;color:#444;font-weight:600;letter-spacing:1px;padding-top:0.5rem';
+  marca.textContent = 'japistickers.com · Cotización estimada sin IVA';
+  
+  wrapper.appendChild(hero);
+  wrapper.appendChild(details);
+  wrapper.appendChild(badges);
+  wrapper.appendChild(marca);
+  document.body.appendChild(wrapper);
+
+  html2canvas(wrapper, {
+    backgroundColor:'#0A0A0A',
+    scale:2,
+    useCORS:true,
+    logging:false
+  }).then(canvas => {
+    document.body.removeChild(wrapper);
+    canvas.toBlob(blob => {
+      const file = new File([blob],'cotizacion-japi.png',{type:'image/png'});
+      if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
+        navigator.share({files:[file], title:'Cotización Japi Stickers'});
+      } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href=url; a.download='cotizacion-japi.png'; a.click();
+        URL.revokeObjectURL(url);
+      }
+    },'image/png');
+  }).catch(()=>{
+    document.body.removeChild(wrapper);
+    // Fallback: abrir WhatsApp con texto
+    window.open('https://wa.me/525510740625?text='+encodeURIComponent(getCotTexto()),'_blank');
   });
-  ctx.fillStyle='#444';ctx.font='500 11px sans-serif';
-  ctx.fillText('*Precio estimado sin IVA · Sujeto a confirmación de arte · japistickers.com',30,H-20);
-  canvas.toBlob(blob=>{
-    if(navigator.share&&navigator.canShare&&navigator.canShare({files:[new File([blob],'cotizacion-japi.png',{type:'image/png'})]})){
-      navigator.share({files:[new File([blob],'cotizacion-japi.png',{type:'image/png'})],title:'Cotización Japi Stickers'});
-    } else {
-      const url=URL.createObjectURL(blob);
-      const a=document.createElement('a');a.href=url;a.download='cotizacion-japi.png';a.click();
-      URL.revokeObjectURL(url);
-    }
-  },'image/png');
 }
 
 function reset(){
