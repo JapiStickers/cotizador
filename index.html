@@ -548,13 +548,15 @@ function getCotTexto(){
 }
 
 function testImagen(){
+  const msg=document.createElement('div');
+  msg.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#F5C518;color:#000;padding:20px;border-radius:12px;font-weight:900;font-size:1rem;z-index:9999;text-align:center';
   if(typeof html2canvas==='undefined'){
-    alert('html2canvas NO está cargado — usando canvas manual');
-    generarImagenManual();
+    msg.textContent='❌ html2canvas NO cargó';
   } else {
-    alert('html2canvas SÍ está cargado ✅');
-    generarImagen();
+    msg.textContent='✅ html2canvas SÍ cargó';
   }
+  document.body.appendChild(msg);
+  setTimeout(()=>{document.body.removeChild(msg);generarImagen();},2000);
 }
 
 function generarImagen(){
