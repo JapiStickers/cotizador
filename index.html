@@ -514,6 +514,7 @@ function mostrarResultado(){
   diff.textContent=producto==='sheet'?'🎨 Varios diseños en una hoja · kisscut por diseño · vinil premium':producto==='especial'?'✨ Vinil efecto especial · diecut con borde kisscut · impacto visual único':'🦆 Diecut con borde kisscut incluido · vinil de alta durabilidad';
   document.getElementById('r-ship').textContent=envio==='dhl'?'🚚 Envío DHL a toda la república · 3–5 días hábiles':'📍 Recoger en taller CDMX · te avisamos cuando esté listo';
   guardarHistorial(a,h,conDesc,nom);
+  registrarCotizacion();
 }
 
 function guardarHistorial(a,h,total,nom){
@@ -534,7 +535,28 @@ function renderHistorial(){
   });
 }
 
-function getCotTexto(){
+const APPS_SCRIPT_URL='https://script.google.com/a/macros/japistickers.com/s/AKfycbzVUZwdCk9st3Hht1RT8knm-c3ZmzRRg-e3vVBiRnEtRUTY_ayOwxbgPe3H30wNep1khA/exec';
+
+function registrarCotizacion(){
+  const pc=getPC();
+  const data={
+    fecha:     new Date().toLocaleDateString('es-MX'),
+    cliente:   document.getElementById('nombre').value.trim()||'Sin nombre',
+    producto:  document.getElementById('r-producto').textContent,
+    acabado:   document.getElementById('r-acabado').textContent,
+    tamano:    document.getElementById('r-tam').textContent,
+    cantidad:  document.getElementById('r-cant').textContent,
+    plantillas:document.getElementById('r-plant').textContent,
+    envio:     document.getElementById('r-envio').textContent,
+    total:     document.getElementById('r-total').textContent
+  };
+  fetch(APPS_SCRIPT_URL,{
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(data)
+  }).catch(err=>console.log('Error registrando cotización:',err));
+}
   const nombre=document.getElementById('nombre').value.trim();
   const notas=document.getElementById('notas').value.trim();
   const saludo=nombre?`Hola, soy *${nombre}*`:'Hola';
