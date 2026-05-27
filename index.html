@@ -561,6 +561,18 @@ function testImagen(){
 
 function generarImagen(){
   const el=document.getElementById('resultado-captura');
+  const nombre=document.getElementById('nombre').value.trim();
+  
+  // Agregar nombre temporalmente al hero si existe
+  let nombreEl=null;
+  if(nombre){
+    nombreEl=document.createElement('div');
+    nombreEl.textContent='Cotización para '+nombre;
+    nombreEl.style.cssText='font-size:0.85rem;font-weight:700;color:#F5C518;opacity:0.8;margin-bottom:0.5rem;letter-spacing:1px;text-transform:uppercase';
+    const hero=el.querySelector('.result-hero');
+    hero.insertBefore(nombreEl, hero.firstChild);
+  }
+
   html2canvas(el,{
     backgroundColor:'#0A0A0A',
     scale:2,
@@ -568,6 +580,7 @@ function generarImagen(){
     allowTaint:true,
     logging:false
   }).then(canvas=>{
+    if(nombreEl) nombreEl.remove();
     canvas.toBlob(blob=>{
       const file=new File([blob],'cotizacion-japi.png',{type:'image/png'});
       if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
@@ -579,6 +592,7 @@ function generarImagen(){
       }
     },'image/png');
   }).catch(err=>{
+    if(nombreEl) nombreEl.remove();
     alert('Error: '+err.message);
   });
 }
