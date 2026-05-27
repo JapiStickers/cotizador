@@ -1,4 +1,14 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Japi Stickers · Cotizador</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Japi Stickers">
+<link rel="apple-touch-icon" href="https://i.imgur.com/EaSlAly.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap');
@@ -9,8 +19,6 @@ body{background:var(--ng);color:var(--tx);font-family:'Montserrat',system-ui,san
 .header-logo{width:38px;height:38px;border-radius:50%;border:2px solid var(--am);overflow:hidden;flex-shrink:0;box-shadow:0 0 12px rgba(245,197,24,0.3)}
 .header-logo img{width:100%;height:100%;object-fit:cover;display:block}
 .header-text{flex:1}
-.header-text span{display:block;font-weight:900;font-size:0.9rem;color:var(--am);letter-spacing:2px;text-transform:uppercase}
-.header-text small{color:var(--tx2);font-size:0.68rem}
 .price-chip{background:rgba(245,197,24,0.08);border:1px solid rgba(245,197,24,0.2);border-radius:10px;padding:5px 12px;text-align:right;display:none}
 .pc-label{font-size:0.55rem;color:var(--tx2);letter-spacing:1.5px;text-transform:uppercase;font-weight:700}
 .pc-val{font-size:1rem;font-weight:900;color:var(--am);line-height:1.2}
@@ -129,7 +137,7 @@ textarea.notas-inp{resize:none;min-height:90px;line-height:1.6}
   <div class="header-logo"><img src="https://i.imgur.com/EaSlAly.png" onerror="this.style.display='none';this.parentElement.innerHTML='🦆'"/></div>
   <div class="header-text">
     <img src="https://i.imgur.com/kZbmZ6C.png" style="height:22px;object-fit:contain;display:block" onerror="this.style.display='none'"/>
-    <small>Cotizador rápido 🦆</small>
+    <small style="color:#888;font-size:0.68rem">Cotizador rápido 🦆</small>
   </div>
   <div class="price-chip" id="price-chip"><div class="pc-label">Estimado</div><div class="pc-val" id="chip-val">$—</div></div>
 </div>
@@ -318,77 +326,34 @@ textarea.notas-inp{resize:none;min-height:90px;line-height:1.6}
 </div>
 
 <script>
-// ── CONFIGURACIÓN DE PRECIOS ─────────────────────────────
-const CFG = {
-  diecut:   { plant: 340, media: 199 },
-  especial: { plant: 440, media: 220 },
-  sheet:    { plant: 390, media: 390 }
-};
-const DESCUENTO_DESDE = 5;   // plantillas
-const DESCUENTO_PCT   = 0.10;
-const COSTO_ENVIO     = 169;
+const CFG={diecut:{plant:340,media:199},especial:{plant:440,media:220},sheet:{plant:390,media:390}};
+const DESCUENTO_DESDE=5,DESCUENTO_PCT=0.10,COSTO_ENVIO=169,PLANTILLA_AREA=4410;
+const PRESETS_STD=[{l:'4×4 cm',w:4,h:4},{l:'5×5 cm',w:5,h:5},{l:'6×6 cm',w:6,h:6},{l:'5×9 cm',w:5,h:9},{l:'7×7 cm',w:7,h:7},{l:'10×10 cm',w:10,h:10}];
+const PRESETS_SHEET=[{l:'Chica · 8×10 cm',w:8,h:10,ppp:32},{l:'Mediana · 10×15 cm',w:10,h:15,ppp:20},{l:'Grande · 21×15 cm',w:21,h:15,ppp:10}];
+const TABLA_DIECUT={3:100,4:80,5:70,6:60,7:50,8:35,9:30,10:28};
+let producto=null,acabado=null,efecto=null,envio=null,cantidad=null,step=1,historial=[];
 
-const PLANTILLA_AREA = 4410;
-const PRESETS_STD    = [{l:'4×4 cm',w:4,h:4},{l:'5×5 cm',w:5,h:5},{l:'6×6 cm',w:6,h:6},{l:'5×9 cm',w:5,h:9},{l:'7×7 cm',w:7,h:7},{l:'10×10 cm',w:10,h:10}];
-const PRESETS_SHEET  = [{l:'Chica · 9×12 cm',w:9,h:12,ppp:24},{l:'Mediana · 9×15 cm',w:9,h:15,ppp:20},{l:'Grande · 13×17 cm',w:13,h:17,ppp:15}];
-const TABLA_DIECUT   = {3:100,4:80,5:70,6:60,7:50,8:35,9:30,10:28};
+function sinDescuento(nP){const cfg=CFG[producto],e=Math.floor(nP),m=(nP%1)>=0.5?1:0;return e*cfg.plant+m*cfg.media;}
+function conDescuento(nP){const base=sinDescuento(nP);return nP>=DESCUENTO_DESDE?Math.round(base*(1-DESCUENTO_PCT)):base;}
+function totalConEnvio(nP){return conDescuento(nP)+(envio==='dhl'?COSTO_ENVIO:0);}
 
-// ── ESTADO ───────────────────────────────────────────────
-let producto=null, acabado=null, efecto=null, envio=null, cantidad=null, step=1, historial=[];
-
-// ── PRECIOS ──────────────────────────────────────────────
-// Precio total SIN descuento
-function sinDescuento(nP) {
-  const cfg = CFG[producto];
-  const e = Math.floor(nP);
-  const m = (nP % 1) >= 0.5 ? 1 : 0;
-  return e * cfg.plant + m * cfg.media;
+function piezasPorPlantilla(a,h){
+  a=parseFloat(a);h=parseFloat(h);
+  if(producto==='sheet'){const m=PRESETS_SHEET.find(p=>p.w===a&&p.h===h);return m?m.ppp:Math.max(1,Math.floor(PLANTILLA_AREA/((a+2)*(h+2))));}
+  const prop=Math.max(a,h)/Math.min(a,h);
+  if(prop>1.5) return Math.max(1,Math.floor(PLANTILLA_AREA/((a+1)*(h+1))));
+  const lado=Math.max(a,h),keys=Object.keys(TABLA_DIECUT).map(Number).sort((x,y)=>x-y);
+  if(lado<=keys[0]) return TABLA_DIECUT[keys[0]];
+  if(lado>=keys[keys.length-1]) return TABLA_DIECUT[keys[keys.length-1]];
+  const lo=keys.filter(k=>k<=lado).pop(),hi=keys.find(k=>k>lado);
+  return Math.round(TABLA_DIECUT[lo]+(TABLA_DIECUT[hi]-TABLA_DIECUT[lo])*((lado-lo)/(hi-lo)));
 }
 
-// Precio total CON descuento si aplica
-function conDescuento(nP) {
-  const base = sinDescuento(nP);
-  return nP >= DESCUENTO_DESDE ? Math.round(base * (1 - DESCUENTO_PCT)) : base;
-}
+function getPC(){if(!cantidad||!producto)return 0;const p=piezasPorPlantilla(getA(),getH()),min=producto==='sheet'?1:0.5;return Math.max(min,Math.ceil((cantidad/p)*2)/2);}
+function precioPlantilla(){if(!producto)return '—';return '$'+CFG[producto].plant;}
+function getA(){return parseFloat(document.getElementById('ancho').value)||5;}
+function getH(){return parseFloat(document.getElementById('alto').value)||5;}
 
-// Precio incluyendo envío
-function totalConEnvio(nP) {
-  return conDescuento(nP) + (envio === 'dhl' ? COSTO_ENVIO : 0);
-}
-
-// ── PIEZAS POR PLANTILLA ─────────────────────────────────
-function piezasPorPlantilla(a, h) {
-  a = parseFloat(a); h = parseFloat(h);
-  if (producto === 'sheet') {
-    const m = PRESETS_SHEET.find(p => p.w === a && p.h === h);
-    return m ? m.ppp : Math.max(1, Math.floor(PLANTILLA_AREA / ((a+2)*(h+2))));
-  }
-  const prop = Math.max(a,h) / Math.min(a,h);
-  if (prop > 1.5) return Math.max(1, Math.floor(PLANTILLA_AREA / ((a+1)*(h+1))));
-  const lado = Math.max(a,h);
-  const keys = Object.keys(TABLA_DIECUT).map(Number).sort((x,y)=>x-y);
-  if (lado <= keys[0]) return TABLA_DIECUT[keys[0]];
-  if (lado >= keys[keys.length-1]) return TABLA_DIECUT[keys[keys.length-1]];
-  const lo = keys.filter(k=>k<=lado).pop(), hi = keys.find(k=>k>lado);
-  return Math.round(TABLA_DIECUT[lo] + (TABLA_DIECUT[hi]-TABLA_DIECUT[lo]) * ((lado-lo)/(hi-lo)));
-}
-
-function getPC() {
-  if (!cantidad || !producto) return 0;
-  const p = piezasPorPlantilla(getA(), getH());
-  const min = producto === 'sheet' ? 1 : 0.5;
-  return Math.max(min, Math.ceil((cantidad/p)*2)/2);
-}
-
-function precioPlantilla() {
-  if (!producto) return '—';
-  return '$' + CFG[producto].plant;
-}
-
-function getA(){ return parseFloat(document.getElementById('ancho').value)||5; }
-function getH(){ return parseFloat(document.getElementById('alto').value)||5; }
-
-// ── UI ───────────────────────────────────────────────────
 function validarTamano(){
   const a=getA(),h=getH(),err=document.getElementById('size-error'),next=document.getElementById('btn-next');
   if(a>45||h>98){err.classList.add('visible');next.disabled=true;return false;}
@@ -396,30 +361,29 @@ function validarTamano(){
 }
 
 function updatePreview(){
-  if(!validarTamano()) return;
-  document.getElementById('prev-ppp').textContent = piezasPorPlantilla(getA(),getH())+' pzas';
-  document.getElementById('prev-precio-plant').textContent = precioPlantilla();
-  if(step===4) buildCantGrid(piezasPorPlantilla(getA(),getH()));
+  if(!validarTamano())return;
+  document.getElementById('prev-ppp').textContent=piezasPorPlantilla(getA(),getH())+' pzas';
+  document.getElementById('prev-precio-plant').textContent=precioPlantilla();
+  if(step===4)buildCantGrid(piezasPorPlantilla(getA(),getH()));
   updateChip();
 }
 
 function updateChip(){
-  if(!cantidad||!producto) return;
-  const pc = getPC();
-  const total = totalConEnvio(pc);
+  if(!cantidad||!producto)return;
+  const pc=getPC(),total=totalConEnvio(pc);
   document.getElementById('price-chip').style.display='block';
   document.getElementById('chip-val').textContent='$'+total.toLocaleString('es-MX');
 }
 
 function checkDescBadge(){
-  const pc = getPC();
-  document.getElementById('cant-desc-badge').style.display = pc>=DESCUENTO_DESDE?'block':'none';
+  const pc=getPC();
+  document.getElementById('cant-desc-badge').style.display=pc>=DESCUENTO_DESDE?'block':'none';
 }
 
 function selProducto(v){
-  producto=v; acabado=null; efecto=null; cantidad=null; envio=null;
+  producto=v;acabado=null;efecto=null;cantidad=null;envio=null;
   ['diecut','especial','sheet'].forEach(x=>document.getElementById('opt-'+x).classList.remove('selected'));
-  const el=document.getElementById('opt-'+v); el.classList.add('selected','pop');
+  const el=document.getElementById('opt-'+v);el.classList.add('selected','pop');
   el.addEventListener('animationend',()=>el.classList.remove('pop'),{once:true});
   document.getElementById('btn-next').disabled=false;
 }
@@ -427,7 +391,7 @@ function selProducto(v){
 function selAcabado(v){
   acabado=v;
   ['mate','brillante'].forEach(x=>document.getElementById('opt-'+x).classList.remove('selected'));
-  const el=document.getElementById('opt-'+v); el.classList.add('selected','pop-small');
+  const el=document.getElementById('opt-'+v);el.classList.add('selected','pop-small');
   el.addEventListener('animationend',()=>el.classList.remove('pop-small'),{once:true});
   checkAcabadoCompleto();
 }
@@ -435,33 +399,31 @@ function selAcabado(v){
 function selEfecto(v){
   efecto=v;
   ['holo','metal'].forEach(x=>document.getElementById('opt-'+x).classList.remove('selected'));
-  const el=document.getElementById('opt-'+v); el.classList.add('selected','pop-small');
+  const el=document.getElementById('opt-'+v);el.classList.add('selected','pop-small');
   el.addEventListener('animationend',()=>el.classList.remove('pop-small'),{once:true});
   checkAcabadoCompleto();
 }
 
-function checkAcabadoCompleto(){
-  document.getElementById('btn-next').disabled = !acabado||(producto==='especial'&&!efecto);
-}
+function checkAcabadoCompleto(){document.getElementById('btn-next').disabled=!acabado||(producto==='especial'&&!efecto);}
 
 function selEnvio(v){
   envio=v;
   ['recoger','dhl'].forEach(x=>document.getElementById('opt-'+x).classList.remove('selected'));
-  const el=document.getElementById('opt-'+v); el.classList.add('selected','pop');
+  const el=document.getElementById('opt-'+v);el.classList.add('selected','pop');
   el.addEventListener('animationend',()=>el.classList.remove('pop'),{once:true});
-  document.getElementById('btn-next').disabled=false; updateChip();
+  document.getElementById('btn-next').disabled=false;updateChip();
 }
 
 function setPreset(w,h,el){
   document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('selected'));
   el.classList.add('selected');
-  document.getElementById('ancho').value=w; document.getElementById('alto').value=h;
+  document.getElementById('ancho').value=w;document.getElementById('alto').value=h;
   updatePreview();
 }
-function clearPreset(){ document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('selected')); }
+function clearPreset(){document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('selected'));}
 
 function buildPresets(){
-  const wrap=document.getElementById('size-presets'); wrap.innerHTML='';
+  const wrap=document.getElementById('size-presets');wrap.innerHTML='';
   const list=producto==='sheet'?PRESETS_SHEET:PRESETS_STD;
   list.forEach(p=>{const b=document.createElement('div');b.className='preset-btn';b.textContent=p.l;b.onclick=()=>setPreset(p.w,p.h,b);wrap.appendChild(b);});
   const inp=document.getElementById('size-inputs-wrap');
@@ -471,7 +433,7 @@ function buildPresets(){
 
 function buildCantGrid(ppP){
   const mults=producto==='sheet'?[1,2,3,5,10,20]:[0.5,1,2,3,5,10];
-  const grid=document.getElementById('cant-grid'); grid.innerHTML='';
+  const grid=document.getElementById('cant-grid');grid.innerHTML='';
   mults.forEach(m=>{
     const pzas=Math.round(ppP*m);
     const btn=document.createElement('div');
@@ -490,8 +452,8 @@ function selCantCustom(){
 
 function updateDots(){
   for(let i=1;i<=7;i++){
-    const d=document.getElementById('sd'+i); d.classList.remove('active','done');
-    if(i===step) d.classList.add('active'); else if(i<step) d.classList.add('done');
+    const d=document.getElementById('sd'+i);d.classList.remove('active','done');
+    if(i===step)d.classList.add('active');else if(i<step)d.classList.add('done');
   }
 }
 
@@ -507,18 +469,15 @@ function showStep(n){
   else if(n===2){document.getElementById('efecto-section').style.display=producto==='especial'?'block':'none';next.disabled=!acabado||(producto==='especial'&&!efecto);}
   else if(n===3){next.disabled=false;buildPresets();updatePreview();}
   else if(n===4){next.disabled=!cantidad;buildCantGrid(piezasPorPlantilla(getA(),getH()));}
-  else if(n===5) next.disabled=false;
-  else if(n===6) next.disabled=!envio;
-  else if(n===7) mostrarResultado();
+  else if(n===5)next.disabled=false;
+  else if(n===6)next.disabled=!envio;
+  else if(n===7)mostrarResultado();
 }
 function goNext(){if(step<7)showStep(step+1);}
 function goBack(){if(step>1)showStep(step-1);}
 
-// ── RESULTADO ────────────────────────────────────────────
 function mostrarResultado(){
-  const a=getA(), h=getH();
-  const p=piezasPorPlantilla(a,h);
-  const pc=getPC();
+  const a=getA(),h=getH(),p=piezasPorPlantilla(a,h),pc=getPC();
   const costoEnvio=envio==='dhl'?COSTO_ENVIO:0;
   const sinDesc=sinDescuento(pc)+costoEnvio;
   const conDesc=conDescuento(pc)+costoEnvio;
@@ -529,7 +488,7 @@ function mostrarResultado(){
   const nomAcabado=producto==='especial'?(efecto==='holo'?'Holográfico':'Metálico')+' · '+(acabado==='mate'?'mate':'brillante'):(acabado==='mate'?'Laminado mate':'Laminado brillante');
 
   const montoEl=document.getElementById('r-total');
-  montoEl.classList.remove('count-anim'); void montoEl.offsetWidth;
+  montoEl.classList.remove('count-anim');void montoEl.offsetWidth;
   montoEl.textContent='$'+conDesc.toLocaleString('es-MX');
   montoEl.classList.add('count-anim');
 
@@ -555,22 +514,21 @@ function mostrarResultado(){
   const diff=document.getElementById('r-diff');
   diff.textContent=producto==='sheet'?'🎨 Varios diseños en una hoja · kisscut por diseño · vinil premium':producto==='especial'?'✨ Vinil efecto especial · diecut con borde kisscut · impacto visual único':'🦆 Diecut con borde kisscut incluido · vinil de alta durabilidad';
   document.getElementById('r-ship').textContent=envio==='dhl'?'🚚 Envío DHL a toda la república · 3–5 días hábiles':'📍 Recoger en taller CDMX · te avisamos cuando esté listo';
-
   guardarHistorial(a,h,conDesc,nom);
 }
 
 function guardarHistorial(a,h,total,nom){
   const item={producto,acabado,efecto,a,h,cantidad,envio,total,nom,fecha:new Date().toLocaleDateString('es-MX',{day:'numeric',month:'short'})};
   historial=historial.filter(x=>!(x.producto===producto&&x.a===a&&x.h===h&&x.cantidad===cantidad));
-  historial.unshift(item); if(historial.length>5)historial=historial.slice(0,5);
+  historial.unshift(item);if(historial.length>5)historial=historial.slice(0,5);
 }
 
 function renderHistorial(){
   const sec=document.getElementById('hist-section'),list=document.getElementById('hist-list');
   if(!historial.length){sec.style.display='none';return;}
-  sec.style.display='block'; list.innerHTML='';
+  sec.style.display='block';list.innerHTML='';
   historial.forEach(it=>{
-    const el=document.createElement('div'); el.className='hist-item';
+    const el=document.createElement('div');el.className='hist-item';
     el.innerHTML=`<div><div class="hist-desc">${it.nom} · ${it.acabado}${it.efecto?' · '+it.efecto:''} · ${it.a}×${it.h}cm</div><div class="hist-sub">${it.cantidad.toLocaleString('es-MX')} pzas · ${it.fecha}</div></div><div class="hist-price">$${it.total.toLocaleString('es-MX')}</div>`;
     el.onclick=()=>{producto=it.producto;acabado=it.acabado;efecto=it.efecto;cantidad=it.cantidad;envio=it.envio;document.getElementById('ancho').value=it.a;document.getElementById('alto').value=it.h;showStep(7);};
     list.appendChild(el);
@@ -585,38 +543,62 @@ function getCotTexto(){
   if(document.getElementById('r-subtotal-row').style.display!=='none'){
     txt+=`\n• Sin descuento: ${document.getElementById('r-subtotal').textContent}\n• Descuento 10%: ${document.getElementById('r-ahorro').textContent}`;
   }
-  if(notas) txt+=`\n• Notas: ${notas}`;
+  if(notas)txt+=`\n• Notas: ${notas}`;
   txt+=`\n\n*Total: ${document.getElementById('r-total').textContent} MXN*\n_${document.getElementById('r-unit').textContent}_\n\n_Al confirmar te pediremos el archivo en PNG, PDF o AI._\n_Precio sin IVA. Sujeto a confirmación de arte._`;
   return txt;
 }
 
-function copiarCot(){
-  navigator.clipboard.writeText(getCotTexto()).then(()=>{
-    const b=document.querySelector('.btn-copy'); b.textContent='✅ ¡Copiado!';
-    setTimeout(()=>b.textContent='📋 Copiar texto como respaldo',2000);
-  });
-}
-
 function generarImagen(){
-  const el=document.getElementById('resultado-captura');
-  html2canvas(el,{backgroundColor:'#0A0A0A',scale:2,useCORS:true,logging:false}).then(canvas=>{
-    canvas.toBlob(blob=>{
-      const file=new File([blob],'cotizacion-japi.png',{type:'image/png'});
-      if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
-        navigator.share({files:[file],title:'Cotización Japi Stickers'});
-      } else {
-        const url=URL.createObjectURL(blob);
-        const a=document.createElement('a'); a.href=url; a.download='cotizacion-japi.png'; a.click();
-        URL.revokeObjectURL(url);
-      }
-    },'image/png');
-  }).catch(()=>window.open('https://wa.me/525510740625?text='+encodeURIComponent(getCotTexto()),'_blank'));
+  const W=800,H=620;
+  const canvas=document.createElement('canvas');
+  canvas.width=W;canvas.height=H;
+  const ctx=canvas.getContext('2d');
+  const grad=ctx.createLinearGradient(0,0,W,H);
+  grad.addColorStop(0,'#1f1800');grad.addColorStop(1,'#0a0a0a');
+  ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='rgba(245,197,24,0.3)';ctx.lineWidth=2;ctx.strokeRect(1,1,W-2,H-2);
+  ctx.fillStyle='rgba(245,197,24,0.08)';ctx.fillRect(0,0,W,64);
+  ctx.fillStyle='#F5C518';ctx.font='bold 20px sans-serif';ctx.fillText('JAPI STICKERS',24,40);
+  ctx.fillStyle='#888';ctx.font='12px sans-serif';ctx.fillText('japistickers.com',24,56);
+  ctx.fillStyle='#F5C518';ctx.font='bold 64px sans-serif';ctx.fillText(document.getElementById('r-total').textContent,24,148);
+  ctx.fillStyle='#AAAAAA';ctx.font='14px sans-serif';ctx.fillText(document.getElementById('r-unit').textContent,24,172);
+  ctx.strokeStyle='rgba(245,197,24,0.2)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(24,190);ctx.lineTo(W-24,190);ctx.stroke();
+  const rows=[
+    ['Producto',document.getElementById('r-producto').textContent],
+    ['Acabado',document.getElementById('r-acabado').textContent],
+    ['Tamaño',document.getElementById('r-tam').textContent],
+    ['Cantidad',document.getElementById('r-cant').textContent],
+    ['Plantillas',document.getElementById('r-plant').textContent],
+    ['Envío',document.getElementById('r-envio').textContent],
+  ];
+  if(document.getElementById('r-subtotal-row').style.display!=='none'){
+    rows.push(['Sin descuento',document.getElementById('r-subtotal').textContent]);
+    rows.push(['Descuento 10%',document.getElementById('r-ahorro').textContent]);
+  }
+  let y=218;
+  rows.forEach(([k,v])=>{
+    ctx.fillStyle='#888';ctx.font='13px sans-serif';ctx.fillText(k,24,y);
+    ctx.fillStyle=k==='Descuento 10%'?'#4ade80':'#F5F5F5';ctx.font='bold 13px sans-serif';ctx.fillText(v,200,y);
+    ctx.strokeStyle='#222';ctx.lineWidth=0.5;ctx.beginPath();ctx.moveTo(24,y+8);ctx.lineTo(W-24,y+8);ctx.stroke();
+    y+=30;
+  });
+  ctx.fillStyle='#444';ctx.font='11px sans-serif';ctx.fillText('Precio estimado sin IVA · Sujeto a confirmación de arte',24,H-16);
+  canvas.toBlob(blob=>{
+    const file=new File([blob],'cotizacion-japi.png',{type:'image/png'});
+    if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+      navigator.share({files:[file],title:'Cotización Japi Stickers'});
+    } else {
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');a.href=url;a.download='cotizacion-japi.png';a.click();
+      URL.revokeObjectURL(url);
+    }
+  },'image/png');
 }
 
 function reset(){
-  producto=null; acabado=null; efecto=null; cantidad=null; envio=null;
-  document.getElementById('ancho').value=5; document.getElementById('alto').value=5;
-  document.getElementById('cant-custom-inp').value=''; document.getElementById('notas').value='';
+  producto=null;acabado=null;efecto=null;cantidad=null;envio=null;
+  document.getElementById('ancho').value=5;document.getElementById('alto').value=5;
+  document.getElementById('cant-custom-inp').value='';document.getElementById('notas').value='';
   document.getElementById('nombre').value='';
   document.getElementById('price-chip').style.display='none';
   document.getElementById('cant-desc-badge').style.display='none';
@@ -624,5 +606,11 @@ function reset(){
   showStep(1);
 }
 
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/sw.js');
+}
+
 showStep(1);
 </script>
+</body>
+</html>
