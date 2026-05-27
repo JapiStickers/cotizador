@@ -549,10 +549,6 @@ function getCotTexto(){
 
 function generarImagen(){
   const el=document.getElementById('resultado-captura');
-  if(typeof html2canvas==='undefined'){
-    alert('Cargando... intenta de nuevo en un momento.');
-    return;
-  }
   html2canvas(el,{
     backgroundColor:'#0A0A0A',
     scale:2,
@@ -571,7 +567,7 @@ function generarImagen(){
       }
     },'image/png');
   }).catch(err=>{
-    alert('Error al generar imagen: '+err.message);
+    alert('Error: '+err.message);
   });
 }
 
@@ -590,8 +586,8 @@ if('serviceWorker' in navigator){
   navigator.serviceWorker.register('/sw.js');
 }
 
-showStep(1);</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+showStep(1);
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
