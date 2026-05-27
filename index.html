@@ -563,7 +563,6 @@ function generarImagen(){
   const el=document.getElementById('resultado-captura');
   const nombre=document.getElementById('nombre').value.trim();
   
-  // Agregar nombre temporalmente al hero si existe
   let nombreEl=null;
   if(nombre){
     nombreEl=document.createElement('div');
@@ -573,28 +572,30 @@ function generarImagen(){
     hero.insertBefore(nombreEl, hero.firstChild);
   }
 
-  html2canvas(el,{
-    backgroundColor:'#0A0A0A',
-    scale:2,
-    useCORS:true,
-    allowTaint:true,
-    logging:false
-  }).then(canvas=>{
-    if(nombreEl) nombreEl.remove();
-    canvas.toBlob(blob=>{
-      const file=new File([blob],'cotizacion-japi.png',{type:'image/png'});
-      if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
-        navigator.share({files:[file],title:'Cotización Japi Stickers'});
-      } else {
-        const url=URL.createObjectURL(blob);
-        const a=document.createElement('a');a.href=url;a.download='cotizacion-japi.png';a.click();
-        URL.revokeObjectURL(url);
-      }
-    },'image/png');
-  }).catch(err=>{
-    if(nombreEl) nombreEl.remove();
-    alert('Error: '+err.message);
-  });
+  setTimeout(()=>{
+    html2canvas(el,{
+      backgroundColor:'#0A0A0A',
+      scale:2,
+      useCORS:true,
+      allowTaint:true,
+      logging:false
+    }).then(canvas=>{
+      if(nombreEl) nombreEl.remove();
+      canvas.toBlob(blob=>{
+        const file=new File([blob],'cotizacion-japi.png',{type:'image/png'});
+        if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+          navigator.share({files:[file],title:'Cotización Japi Stickers'});
+        } else {
+          const url=URL.createObjectURL(blob);
+          const a=document.createElement('a');a.href=url;a.download='cotizacion-japi.png';a.click();
+          URL.revokeObjectURL(url);
+        }
+      },'image/png');
+    }).catch(err=>{
+      if(nombreEl) nombreEl.remove();
+      alert('Error: '+err.message);
+    });
+  }, 100);
 }
 
 function reset(){
