@@ -306,7 +306,7 @@ textarea.notas-inp{resize:none;min-height:90px;line-height:1.6}
 </div>
 
 <script>
-var APPS_SCRIPT_URL='https://script.google.com/a/macros/japistickers.com/s/AKfycbzVUZwdCk9st3Hht1RT8knm-c3ZmzRRg-e3vVBiRnEtRUTY_ayOwxbgPe3H30wNep1khA/exec';
+var APPS_SCRIPT_URL='https://script.google.com/macros/s/AKfycbzbGUw6vHRe916EOPQY1LKqLnkXuUEGowmG3WeTNJMnUUkX39AdOYBUXHT1VLxBXhUU0A/exec';
 
 var CFG={diecut:{plant:340,media:199},especial:{plant:440,media:220},sheet:{plant:390,media:390}};
 var DESCUENTO_DESDE=5,DESCUENTO_PCT=0.10,COSTO_ENVIO=169,PLANTILLA_AREA=4410;
@@ -513,12 +513,9 @@ function registrarCotizacion(){
     envio:     document.getElementById('r-envio').textContent,
     total:     document.getElementById('r-total').textContent
   };
-  fetch(APPS_SCRIPT_URL,{
-    method:'POST',
-    mode:'no-cors',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(data)
-  }).catch(function(err){console.log('Error:',err);});
+  var params=Object.keys(data).map(function(k){return k+'='+encodeURIComponent(data[k]);}).join('&');
+  var img=new Image();
+  img.src=APPS_SCRIPT_URL+'?'+params;
 }
 
 function guardarHistorial(a,h,total,nom){
