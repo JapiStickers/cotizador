@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <title>Japi Stickers · Cotizador</title>
 <link rel="manifest" href="/manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -551,7 +550,17 @@ function getCotTexto(){
 
 function generarImagen(){
   const el=document.getElementById('resultado-captura');
-  html2canvas(el,{backgroundColor:'#0A0A0A',scale:2,useCORS:true,logging:false}).then(canvas=>{
+  if(typeof html2canvas==='undefined'){
+    alert('Cargando... intenta de nuevo en un momento.');
+    return;
+  }
+  html2canvas(el,{
+    backgroundColor:'#0A0A0A',
+    scale:2,
+    useCORS:true,
+    allowTaint:true,
+    logging:false
+  }).then(canvas=>{
     canvas.toBlob(blob=>{
       const file=new File([blob],'cotizacion-japi.png',{type:'image/png'});
       if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
@@ -562,8 +571,8 @@ function generarImagen(){
         URL.revokeObjectURL(url);
       }
     },'image/png');
-  }).catch(()=>{
-    alert('No se pudo generar la imagen.');
+  }).catch(err=>{
+    alert('Error al generar imagen: '+err.message);
   });
 }
 
