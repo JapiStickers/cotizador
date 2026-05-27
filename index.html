@@ -314,7 +314,7 @@ textarea.notas-inp{resize:none;min-height:90px;line-height:1.6}
       <div class="badge badge-ship" id="r-ship"></div>
     </div>
   </div>
-  <button class="btn-wa" onclick="generarImagen()">🖼️ Compartir cotización como imagen</button>
+  <button class="btn-wa" onclick="testImagen()">🖼️ Compartir cotización como imagen</button>
   <button class="btn-copy" onclick="location.href='https://wa.me/525510740625'">💬 Contactar a Japi por WhatsApp</button>
   <button class="btn-nueva" onclick="reset()">↩ Nueva cotización</button>
 </div>
@@ -545,6 +545,16 @@ function getCotTexto(){
   if(notas)txt+=`\n• Notas: ${notas}`;
   txt+=`\n\n*Total: ${document.getElementById('r-total').textContent} MXN*\n_${document.getElementById('r-unit').textContent}_\n\n_Al confirmar te pediremos el archivo en PNG, PDF o AI._\n_Precio sin IVA. Sujeto a confirmación de arte._`;
   return txt;
+}
+
+function testImagen(){
+  if(typeof html2canvas==='undefined'){
+    alert('html2canvas NO está cargado — usando canvas manual');
+    generarImagenManual();
+  } else {
+    alert('html2canvas SÍ está cargado ✅');
+    generarImagen();
+  }
 }
 
 function generarImagen(){
