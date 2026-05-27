@@ -9,7 +9,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Japi Stickers">
 <link rel="apple-touch-icon" href="https://i.imgur.com/EaSlAly.png">
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -591,7 +590,8 @@ if('serviceWorker' in navigator){
   navigator.serviceWorker.register('/sw.js');
 }
 
-showStep(1);
+showStep(1);</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </script>
 </body>
 </html>
