@@ -151,7 +151,7 @@ textarea.notas-inp{resize:none;min-height:90px;line-height:1.6}
   <div class="step-dot" id="sd1"></div><div class="step-dot" id="sd2"></div>
   <div class="step-dot" id="sd3"></div><div class="step-dot" id="sd4"></div>
   <div class="step-dot" id="sd5"></div><div class="step-dot" id="sd6"></div>
-  <div class="step-dot" id="sd7"></div>
+  <div class="step-dot" id="sd7"></div><div class="step-dot" id="sd8"></div>
 </div>
 
 <div class="screen" id="s1">
@@ -237,6 +237,25 @@ textarea.notas-inp{resize:none;min-height:90px;line-height:1.6}
 </div>
 
 <div class="screen" id="s7">
+  <div><div class="step-eyebrow"><div class="step-num">7</div><div class="step-label">Paso 7 de 7</div></div><h2 class="step-title">¿Aplicar<br><span>descuento</span>?</h2></div>
+  <div class="desc-panel" id="desc-panel" style="display:block">
+    <div id="desc-pass-wrap">
+      <div class="notas-wrap" style="margin-bottom:0.75rem"><label>Contraseña</label><input type="password" id="desc-pass" class="notas-inp" placeholder="••••••"/></div>
+      <button class="btn-copy" onclick="verificarDescuento()" style="padding:0.7rem">Verificar</button>
+    </div>
+    <div id="desc-input-wrap" style="display:none">
+      <div class="desc-tipo-grid">
+        <div class="desc-tipo-btn active" id="desc-btn-pct" onclick="selTipoDesc('pct')">% Porcentaje</div>
+        <div class="desc-tipo-btn" id="desc-btn-monto" onclick="selTipoDesc('monto')">$ Monto fijo</div>
+      </div>
+      <div class="notas-wrap" style="margin-bottom:0.5rem"><label id="desc-label">Descuento (%)</label><input type="number" id="desc-valor" class="notas-inp" placeholder="0" oninput="aplicarDescuento()"/></div>
+      <div id="desc-resultado" style="font-size:0.85rem;color:var(--am);font-weight:700;text-align:center;padding:0.5rem 0"></div>
+    </div>
+  </div>
+  <div class="badge badge-diff" style="margin-top:0.25rem">Sin descuento especial, toca <strong style="color:var(--tx)">Siguiente</strong> para continuar.</div>
+</div>
+
+<div class="screen" id="s8">
   <div><div class="step-eyebrow"><div class="step-num" style="background:var(--am);color:#000">✓</div><div class="step-label">Tu cotización</div></div><h2 class="step-title">Precio<br><span>estimado</span></h2></div>
   <div id="resultado-captura">
     <div class="result-hero" style="margin-bottom:1.25rem">
@@ -261,24 +280,9 @@ textarea.notas-inp{resize:none;min-height:90px;line-height:1.6}
       <div class="badge badge-ship" id="r-ship"></div>
     </div>
   </div>
-  <button class="btn-wa" onclick="generarImagen()">🖼️ Compartir cotización como imagen</button>
-  <button class="btn-copy" onclick="registrarCotizacion();location.href='https://wa.me/525510740625'">💬 Contactar a Japi por WhatsApp</button>
+  <button class="btn-wa" onclick="registrarCotizacion();generarImagen()">🖼️ Compartir cotización como imagen</button>
+  <button class="btn-copy" onclick="location.href='https://wa.me/525510740625'">💬 Contactar a Japi por WhatsApp</button>
   <button class="btn-nueva" onclick="reset()">↩ Nueva cotización</button>
-  <button class="btn-nueva" onclick="toggleDescPanel()" style="color:var(--tx3);font-size:0.75rem">+ Aplicar descuento</button>
-  <div class="desc-panel" id="desc-panel">
-    <div id="desc-pass-wrap">
-      <div class="notas-wrap" style="margin-bottom:0.75rem"><label>Contraseña</label><input type="password" id="desc-pass" class="notas-inp" placeholder="••••••"/></div>
-      <button class="btn-copy" onclick="verificarDescuento()" style="padding:0.7rem">Verificar</button>
-    </div>
-    <div id="desc-input-wrap" style="display:none">
-      <div class="desc-tipo-grid">
-        <div class="desc-tipo-btn active" id="desc-btn-pct" onclick="selTipoDesc('pct')">% Porcentaje</div>
-        <div class="desc-tipo-btn" id="desc-btn-monto" onclick="selTipoDesc('monto')">$ Monto fijo</div>
-      </div>
-      <div class="notas-wrap" style="margin-bottom:0.5rem"><label id="desc-label">Descuento (%)</label><input type="number" id="desc-valor" class="notas-inp" placeholder="0" oninput="aplicarDescuento()"/></div>
-      <div id="desc-resultado" style="font-size:0.85rem;color:var(--am);font-weight:700;text-align:center;padding:0.5rem 0"></div>
-    </div>
-  </div>
 </div>
 
 <div class="nav-bottom" id="nav-bar">
@@ -415,7 +419,7 @@ function selCantCustom(){
 }
 
 function updateDots(){
-  for(var i=1;i<=7;i++){
+  for(var i=1;i<=8;i++){
     var d=document.getElementById('sd'+i);d.classList.remove('active','done');
     if(i===step)d.classList.add('active');else if(i<step)d.classList.add('done');
   }
@@ -427,7 +431,7 @@ function showStep(n){
   document.getElementById('s'+n).classList.add('visible');
   updateDots();
   var nav=document.getElementById('nav-bar'),back=document.getElementById('btn-back'),next=document.getElementById('btn-next');
-  if(n===7){nav.classList.add('hidden');}
+  if(n===8){nav.classList.add('hidden');}
   else{nav.classList.remove('hidden');nav.style.display='flex';}
   back.style.visibility=n===1?'hidden':'visible';
   if(n===1){next.disabled=!producto;renderHistorial();}
@@ -436,9 +440,10 @@ function showStep(n){
   else if(n===4){next.disabled=!cantidad;buildCantGrid(piezasPorPlantilla(getA(),getH()));}
   else if(n===5)next.disabled=false;
   else if(n===6)next.disabled=!envio;
-  else if(n===7)mostrarResultado();
+  else if(n===7){next.disabled=false;prepararDescuento();}
+  else if(n===8)mostrarResultado();
 }
-function goNext(){if(step<7)showStep(step+1);}
+function goNext(){if(step<8)showStep(step+1);}
 function goBack(){if(step>1)showStep(step-1);}
 
 function mostrarResultado(){
@@ -447,17 +452,30 @@ function mostrarResultado(){
   var sinDesc=sinDescuento(pc)+costoEnvio;
   var conDesc=conDescuento(pc)+costoEnvio;
   var ahorro=sinDesc-conDesc;
-  var unit=conDesc/cantidad;
   var hayDescuento=pc>=DESCUENTO_DESDE;
   var nom=producto==='diecut'?'Vinil mate/brillante':producto==='especial'?'Efecto especial':'Sticker Sheet';
   var nomAcabado=producto==='especial'?(efecto==='holo'?'Holográfico':'Metálico')+' · '+(acabado==='mate'?'mate':'brillante'):(acabado==='mate'?'Laminado mate':'Laminado brillante');
 
-  totalBase=conDesc;
+  // Aplicar descuento manual si hay uno ingresado
+  var valDesc=parseFloat(document.getElementById('desc-valor').value)||0;
+  var totalFinal=conDesc;
+  var ahorroManual=0;
+  if(valDesc>0){
+    if(tipoDescuento==='pct') totalFinal=Math.round(conDesc*(1-valDesc/100));
+    else totalFinal=Math.max(0,conDesc-valDesc);
+    ahorroManual=conDesc-totalFinal;
+  }
+
+  var unit=totalFinal/cantidad;
 
   var montoEl=document.getElementById('r-total');
   montoEl.classList.remove('count-anim');void montoEl.offsetWidth;
-  montoEl.textContent='$'+conDesc.toLocaleString('es-MX');
+  montoEl.textContent='$'+totalFinal.toLocaleString('es-MX');
   montoEl.classList.add('count-anim');
+
+  // Actualizar chip del header con total final
+  document.getElementById('price-chip').style.display='block';
+  document.getElementById('chip-val').textContent='$'+totalFinal.toLocaleString('es-MX');
 
   document.getElementById('r-unit').textContent='$'+unit.toFixed(2)+' MXN por pieza';
   document.getElementById('r-producto').textContent=nom;
@@ -469,7 +487,7 @@ function mostrarResultado(){
 
   document.getElementById('r-subtotal-row').style.display=hayDescuento?'flex':'none';
   document.getElementById('r-ahorro-row').style.display=hayDescuento?'flex':'none';
-  document.getElementById('r-desc-manual-row').style.display='none';
+  document.getElementById('r-desc-manual-row').style.display=ahorroManual>0?'flex':'none';
   if(hayDescuento){
     document.getElementById('r-subtotal').textContent='$'+sinDesc.toLocaleString('es-MX')+' MXN';
     document.getElementById('r-ahorro').textContent='-$'+ahorro.toLocaleString('es-MX')+' MXN';
@@ -478,29 +496,34 @@ function mostrarResultado(){
   } else {
     document.getElementById('r-desc').style.display='none';
   }
+  if(ahorroManual>0){
+    document.getElementById('r-desc-manual').textContent='-$'+ahorroManual.toLocaleString('es-MX')+' MXN';
+  }
 
   var diff=document.getElementById('r-diff');
   diff.textContent=producto==='sheet'?'🎨 Varios diseños en una hoja · kisscut por diseño · vinil premium':producto==='especial'?'✨ Vinil efecto especial · diecut con borde kisscut · impacto visual único':'🦆 Diecut con borde kisscut incluido · vinil de alta durabilidad';
   document.getElementById('r-ship').textContent=envio==='dhl'?'🚚 Envío DHL a toda la república · 3–5 días hábiles':'📍 Recoger en taller CDMX · te avisamos cuando esté listo';
 
-  // Ocultar panel de descuento
-  document.getElementById('desc-panel').style.display='none';
-  document.getElementById('desc-pass').value='';
-  document.getElementById('desc-pass-wrap').style.display='block';
-  document.getElementById('desc-input-wrap').style.display='none';
-  document.getElementById('desc-valor').value='';
-
-  guardarHistorial(a,h,conDesc,nom);
+  guardarHistorial(a,h,totalFinal,nom);
 }
 
 // ── DESCUENTO MANUAL ─────────────────────────────────────
-function toggleDescPanel(){
-  var p=document.getElementById('desc-panel');
-  var opening=p.style.display==='none'||p.style.display==='';
-  p.style.display=opening?'block':'none';
-  if(opening){
-    setTimeout(function(){p.scrollIntoView({behavior:'smooth',block:'nearest'});},80);
-  }
+function prepararDescuento(){
+  // Calcular totalBase al entrar al paso 7
+  var pc=getPC();
+  var costoEnvio=envio==='dhl'?COSTO_ENVIO:0;
+  totalBase=conDescuento(pc)+costoEnvio;
+  // Reset panel
+  document.getElementById('desc-pass').value='';
+  document.getElementById('desc-pass').placeholder='••••••';
+  document.getElementById('desc-pass-wrap').style.display='block';
+  document.getElementById('desc-input-wrap').style.display='none';
+  document.getElementById('desc-valor').value='';
+  document.getElementById('desc-resultado').textContent='';
+  tipoDescuento='pct';
+  document.getElementById('desc-btn-pct').className='desc-tipo-btn active';
+  document.getElementById('desc-btn-monto').className='desc-tipo-btn';
+  document.getElementById('desc-label').textContent='Descuento (%)';
 }
 
 function verificarDescuento(){
@@ -533,24 +556,23 @@ function aplicarDescuento(){
     nuevoTotal=Math.max(0,totalBase-val);
   }
   var ahorroDesc=totalBase-nuevoTotal;
-  var montoEl=document.getElementById('r-total');
-  montoEl.classList.remove('count-anim');void montoEl.offsetWidth;
-  montoEl.textContent='$'+nuevoTotal.toLocaleString('es-MX');
-  montoEl.classList.add('count-anim');
-  document.getElementById('r-unit').textContent='$'+(nuevoTotal/cantidad).toFixed(2)+' MXN por pieza';
+  // Actualizar chip del header
+  document.getElementById('price-chip').style.display='block';
+  document.getElementById('chip-val').textContent='$'+(val>0?nuevoTotal:totalBase).toLocaleString('es-MX');
   if(val>0){
-    document.getElementById('r-desc-manual-row').style.display='flex';
-    document.getElementById('r-desc-manual').textContent='-$'+ahorroDesc.toLocaleString('es-MX')+' MXN';
     document.getElementById('desc-resultado').textContent='Ahorro: $'+ahorroDesc.toLocaleString('es-MX')+' MXN';
   } else {
-    document.getElementById('r-desc-manual-row').style.display='none';
     document.getElementById('desc-resultado').textContent='';
-    montoEl.textContent='$'+totalBase.toLocaleString('es-MX');
-    document.getElementById('r-unit').textContent='$'+(totalBase/cantidad).toFixed(2)+' MXN por pieza';
   }
 }
 
 function registrarCotizacion(){
+  var valDesc=parseFloat(document.getElementById('desc-valor').value)||0;
+  var descTexto='';
+  if(valDesc>0){
+    var ahorroManual=tipoDescuento==='pct'?Math.round(totalBase*(valDesc/100)):Math.min(valDesc,totalBase);
+    descTexto='-$'+ahorroManual.toLocaleString('es-MX')+' MXN';
+  }
   var data={
     fecha:new Date().toLocaleDateString('es-MX'),
     cliente:document.getElementById('nombre').value.trim()||'Sin nombre',
@@ -560,7 +582,8 @@ function registrarCotizacion(){
     cantidad:document.getElementById('r-cant').textContent,
     plantillas:document.getElementById('r-plant').textContent,
     envio:document.getElementById('r-envio').textContent,
-    total:document.getElementById('r-total').textContent
+    total:document.getElementById('r-total').textContent,
+    descuento:descTexto
   };
   var params=Object.keys(data).map(function(k){return k+'='+encodeURIComponent(data[k]);}).join('&');
   var img=new Image();
@@ -614,7 +637,7 @@ function generarImagen(){
 }
 
 function reset(){
-  producto=null;acabado=null;efecto=null;cantidad=null;envio=null;totalBase=0;
+  producto=null;acabado=null;efecto=null;cantidad=null;envio=null;totalBase=0;tipoDescuento='pct';
   document.getElementById('ancho').value=5;
   document.getElementById('alto').value=5;
   document.getElementById('cant-custom-inp').value='';
@@ -622,6 +645,14 @@ function reset(){
   document.getElementById('nombre').value='';
   document.getElementById('price-chip').style.display='none';
   document.getElementById('cant-desc-badge').style.display='none';
+  document.getElementById('desc-valor').value='';
+  document.getElementById('desc-resultado').textContent='';
+  document.getElementById('desc-pass').value='';
+  document.getElementById('desc-pass-wrap').style.display='block';
+  document.getElementById('desc-input-wrap').style.display='none';
+  document.getElementById('desc-btn-pct').className='desc-tipo-btn active';
+  document.getElementById('desc-btn-monto').className='desc-tipo-btn';
+  document.getElementById('desc-label').textContent='Descuento (%)';
   document.querySelectorAll('.preset-btn').forEach(function(b){b.classList.remove('selected');});
   document.querySelectorAll('.prod-card').forEach(function(b){b.classList.remove('selected');});
   document.querySelectorAll('.acab-card').forEach(function(b){b.classList.remove('selected');});
