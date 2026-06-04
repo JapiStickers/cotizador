@@ -117,6 +117,10 @@ textarea.notas-inp{resize:none;min-height:90px;line-height:1.6}
 .btn-copy{background:var(--g2);color:var(--tx);border:1.5px solid var(--g3);border-radius:var(--r);padding:0.9rem;font-size:0.9rem;font-weight:700;width:100%;cursor:pointer;transition:all 0.15s}
 .btn-copy:active{transform:scale(0.98)}
 .btn-nueva{background:transparent;color:var(--tx2);border:none;padding:0.5rem;font-size:0.82rem;cursor:pointer;text-decoration:underline;text-underline-offset:3px;width:100%;text-align:center}
+.desc-panel{background:var(--g1);border:1.5px solid var(--g3);border-radius:var(--r2);padding:1rem;display:none}
+.desc-tipo-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:0.75rem}
+.desc-tipo-btn{background:var(--g2);color:var(--tx2);border:1.5px solid var(--g3);border-radius:var(--r3);padding:0.6rem;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.15s;text-align:center}
+.desc-tipo-btn.active{border-color:var(--am);color:var(--am)}
 .hist-section{border-top:1px solid var(--g3);padding-top:1rem;margin-top:0.25rem}
 .hist-title{font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);font-weight:700;margin-bottom:0.75rem}
 .hist-item{background:var(--g1);border:1px solid var(--g3);border-radius:var(--r2);padding:0.8rem 1rem;margin-bottom:8px;cursor:pointer;transition:all 0.15s;display:flex;justify-content:space-between;align-items:center}
@@ -152,58 +156,17 @@ textarea.notas-inp{resize:none;min-height:90px;line-height:1.6}
   <div><div class="step-eyebrow"><div class="step-num">1</div><div class="step-label">Paso 1 de 6</div></div><h2 class="step-title">¿Qué tipo de<br><span>sticker</span> necesitas?</h2></div>
   <div class="prod-cards">
     <div class="prod-card" id="opt-diecut" onclick="selProducto('diecut')">
-      <div class="prod-card-visual">
-        <svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" width="56" height="56" style="background:#1a1a1a">
-          <ellipse cx="28" cy="36" rx="15" ry="11" fill="#F5C518"/>
-          <circle cx="28" cy="22" r="9" fill="#F5C518"/>
-          <ellipse cx="37" cy="22" rx="5" ry="3" fill="#E8640C"/>
-          <circle cx="33" cy="19" r="2" fill="#1a1a1a"/>
-          <circle cx="33.7" cy="18.3" r="0.7" fill="#fff"/>
-          <ellipse cx="22" cy="36" rx="6" ry="4" fill="#e6b800" opacity="0.7"/>
-          <ellipse cx="28" cy="36" rx="17" ry="13" fill="none" stroke="#fff" stroke-width="1" stroke-dasharray="2,2" opacity="0.5"/>
-          <circle cx="28" cy="22" r="11" fill="none" stroke="#fff" stroke-width="1" stroke-dasharray="2,2" opacity="0.5"/>
-        </svg>
-      </div>
+      <div class="prod-card-visual"><svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" width="56" height="56" style="background:#1a1a1a"><ellipse cx="28" cy="36" rx="15" ry="11" fill="#F5C518"/><circle cx="28" cy="22" r="9" fill="#F5C518"/><ellipse cx="37" cy="22" rx="5" ry="3" fill="#E8640C"/><circle cx="33" cy="19" r="2" fill="#1a1a1a"/><circle cx="33.7" cy="18.3" r="0.7" fill="#fff"/><ellipse cx="22" cy="36" rx="6" ry="4" fill="#e6b800" opacity="0.7"/><ellipse cx="28" cy="36" rx="17" ry="13" fill="none" stroke="#fff" stroke-width="1" stroke-dasharray="2,2" opacity="0.5"/><circle cx="28" cy="22" r="11" fill="none" stroke="#fff" stroke-width="1" stroke-dasharray="2,2" opacity="0.5"/></svg></div>
       <div class="prod-card-info"><div class="prod-card-title">Vinil mate/brillante</div><div class="prod-card-sub">Corte a contorno · borde kisscut incluido</div></div>
       <div class="check-circle"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
     </div>
     <div class="prod-card" id="opt-especial" onclick="selProducto('especial')">
-      <div class="prod-card-visual">
-        <svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" width="56" height="56" style="background:#1a1a1a">
-          <defs><linearGradient id="holo" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff6ec7"/><stop offset="25%" stop-color="#f5c518"/><stop offset="50%" stop-color="#4fffb0"/><stop offset="75%" stop-color="#6ec6ff"/><stop offset="100%" stop-color="#ff6ec7"/></linearGradient></defs>
-          <ellipse cx="28" cy="36" rx="15" ry="11" fill="url(#holo)" opacity="0.9"/>
-          <circle cx="28" cy="22" r="9" fill="url(#holo)" opacity="0.9"/>
-          <ellipse cx="37" cy="22" rx="5" ry="3" fill="#E8640C"/>
-          <circle cx="33" cy="19" r="2" fill="#1a1a1a"/>
-          <circle cx="33.7" cy="18.3" r="0.7" fill="#fff"/>
-          <ellipse cx="22" cy="36" rx="6" ry="4" fill="#fff" opacity="0.2"/>
-          <circle cx="16" cy="14" r="1.5" fill="#fff" opacity="0.9"/>
-          <line x1="16" y1="11" x2="16" y2="17" stroke="#fff" stroke-width="0.8" opacity="0.8"/>
-          <line x1="13" y1="14" x2="19" y2="14" stroke="#fff" stroke-width="0.8" opacity="0.8"/>
-        </svg>
-      </div>
+      <div class="prod-card-visual"><svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" width="56" height="56" style="background:#1a1a1a"><defs><linearGradient id="holo" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff6ec7"/><stop offset="25%" stop-color="#f5c518"/><stop offset="50%" stop-color="#4fffb0"/><stop offset="75%" stop-color="#6ec6ff"/><stop offset="100%" stop-color="#ff6ec7"/></linearGradient></defs><ellipse cx="28" cy="36" rx="15" ry="11" fill="url(#holo)" opacity="0.9"/><circle cx="28" cy="22" r="9" fill="url(#holo)" opacity="0.9"/><ellipse cx="37" cy="22" rx="5" ry="3" fill="#E8640C"/><circle cx="33" cy="19" r="2" fill="#1a1a1a"/><circle cx="33.7" cy="18.3" r="0.7" fill="#fff"/><ellipse cx="22" cy="36" rx="6" ry="4" fill="#fff" opacity="0.2"/><circle cx="16" cy="14" r="1.5" fill="#fff" opacity="0.9"/><line x1="16" y1="11" x2="16" y2="17" stroke="#fff" stroke-width="0.8" opacity="0.8"/><line x1="13" y1="14" x2="19" y2="14" stroke="#fff" stroke-width="0.8" opacity="0.8"/></svg></div>
       <div class="prod-card-info"><div class="prod-card-title">Efecto especial</div><div class="prod-card-sub">Mismo corte · vinil holográfico o metálico ✨</div></div>
       <div class="check-circle"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
     </div>
     <div class="prod-card" id="opt-sheet" onclick="selProducto('sheet')">
-      <div class="prod-card-visual">
-        <svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" width="56" height="56" style="background:#1a1a1a">
-          <defs>
-            <linearGradient id="holo3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff6ec7"/><stop offset="50%" stop-color="#4fffb0"/><stop offset="100%" stop-color="#6ec6ff"/></linearGradient>
-            <linearGradient id="metal3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#bbb"/><stop offset="50%" stop-color="#fff"/><stop offset="100%" stop-color="#888"/></linearGradient>
-            <clipPath id="sc"><rect x="5" y="5" width="46" height="46" rx="3"/></clipPath>
-          </defs>
-          <rect x="5" y="5" width="46" height="46" rx="3" fill="#1e1e1e" stroke="#F5C518" stroke-width="1.2"/>
-          <g clip-path="url(#sc)">
-            <line x1="28" y1="5" x2="28" y2="51" stroke="#333" stroke-width="0.8" stroke-dasharray="2,2"/>
-            <line x1="5" y1="28" x2="51" y2="28" stroke="#333" stroke-width="0.8" stroke-dasharray="2,2"/>
-            <ellipse cx="16" cy="20" rx="7" ry="5" fill="#F5C518"/><circle cx="16" cy="13" r="5" fill="#F5C518"/><ellipse cx="20.5" cy="13" rx="2.5" ry="1.5" fill="#E8640C"/><circle cx="19" cy="12" r="1" fill="#1a1a1a"/>
-            <ellipse cx="40" cy="20" rx="7" ry="5" fill="#E8640C"/><circle cx="40" cy="13" r="5" fill="#E8640C"/><ellipse cx="44.5" cy="13" rx="2.5" ry="1.5" fill="#b84000"/><circle cx="43" cy="12" r="1" fill="#1a1a1a"/>
-            <ellipse cx="16" cy="44" rx="7" ry="5" fill="url(#holo3)"/><circle cx="16" cy="37" r="5" fill="url(#holo3)"/><ellipse cx="20.5" cy="37" rx="2.5" ry="1.5" fill="#E8640C"/><circle cx="19" cy="36" r="1" fill="#1a1a1a"/>
-            <ellipse cx="40" cy="44" rx="7" ry="5" fill="url(#metal3)"/><circle cx="40" cy="37" r="5" fill="url(#metal3)"/><ellipse cx="44.5" cy="37" rx="2.5" ry="1.5" fill="#E8640C"/><circle cx="43" cy="36" r="1" fill="#1a1a1a"/>
-          </g>
-        </svg>
-      </div>
+      <div class="prod-card-visual"><svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" width="56" height="56" style="background:#1a1a1a"><defs><linearGradient id="holo3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff6ec7"/><stop offset="50%" stop-color="#4fffb0"/><stop offset="100%" stop-color="#6ec6ff"/></linearGradient><linearGradient id="metal3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#bbb"/><stop offset="50%" stop-color="#fff"/><stop offset="100%" stop-color="#888"/></linearGradient><clipPath id="sc"><rect x="5" y="5" width="46" height="46" rx="3"/></clipPath></defs><rect x="5" y="5" width="46" height="46" rx="3" fill="#1e1e1e" stroke="#F5C518" stroke-width="1.2"/><g clip-path="url(#sc)"><line x1="28" y1="5" x2="28" y2="51" stroke="#333" stroke-width="0.8" stroke-dasharray="2,2"/><line x1="5" y1="28" x2="51" y2="28" stroke="#333" stroke-width="0.8" stroke-dasharray="2,2"/><ellipse cx="16" cy="20" rx="7" ry="5" fill="#F5C518"/><circle cx="16" cy="13" r="5" fill="#F5C518"/><ellipse cx="20.5" cy="13" rx="2.5" ry="1.5" fill="#E8640C"/><circle cx="19" cy="12" r="1" fill="#1a1a1a"/><ellipse cx="40" cy="20" rx="7" ry="5" fill="#E8640C"/><circle cx="40" cy="13" r="5" fill="#E8640C"/><ellipse cx="44.5" cy="13" rx="2.5" ry="1.5" fill="#b84000"/><circle cx="43" cy="12" r="1" fill="#1a1a1a"/><ellipse cx="16" cy="44" rx="7" ry="5" fill="url(#holo3)"/><circle cx="16" cy="37" r="5" fill="url(#holo3)"/><ellipse cx="20.5" cy="37" rx="2.5" ry="1.5" fill="#E8640C"/><circle cx="19" cy="36" r="1" fill="#1a1a1a"/><ellipse cx="40" cy="44" rx="7" ry="5" fill="url(#metal3)"/><circle cx="40" cy="37" r="5" fill="url(#metal3)"/><ellipse cx="44.5" cy="37" rx="2.5" ry="1.5" fill="#E8640C"/><circle cx="43" cy="36" r="1" fill="#1a1a1a"/></g></svg></div>
       <div class="prod-card-info"><div class="prod-card-title">Sticker Sheet</div><div class="prod-card-sub">Varios diseños en una sola hoja</div></div>
       <div class="check-circle"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
     </div>
@@ -288,6 +251,7 @@ textarea.notas-inp{resize:none;min-height:90px;line-height:1.6}
       <div class="rrow"><span class="k">Envío</span><span class="v" id="r-envio">—</span></div>
       <div class="rrow" id="r-subtotal-row" style="display:none"><span class="k">Sin descuento</span><span class="v" id="r-subtotal" style="text-decoration:line-through;color:var(--tx2)">—</span></div>
       <div class="rrow" id="r-ahorro-row" style="display:none"><span class="k">Descuento 10%</span><span class="v" id="r-ahorro" style="color:#4ade80">—</span></div>
+      <div class="rrow" id="r-desc-manual-row" style="display:none"><span class="k">Descuento especial</span><span class="v" id="r-desc-manual" style="color:#4ade80">—</span></div>
     </div>
     <div class="badges-stack">
       <div class="badge badge-desc" id="r-desc" style="display:none"></div>
@@ -298,6 +262,21 @@ textarea.notas-inp{resize:none;min-height:90px;line-height:1.6}
   <button class="btn-wa" onclick="generarImagen()">🖼️ Compartir cotización como imagen</button>
   <button class="btn-copy" onclick="location.href='https://wa.me/525510740625'">💬 Contactar a Japi por WhatsApp</button>
   <button class="btn-nueva" onclick="reset()">↩ Nueva cotización</button>
+  <button class="btn-nueva" onclick="toggleDescPanel()" style="color:var(--tx3);font-size:0.75rem">+ Aplicar descuento</button>
+  <div class="desc-panel" id="desc-panel">
+    <div id="desc-pass-wrap">
+      <div class="notas-wrap" style="margin-bottom:0.75rem"><label>Contraseña</label><input type="password" id="desc-pass" class="notas-inp" placeholder="••••••"/></div>
+      <button class="btn-copy" onclick="verificarDescuento()" style="padding:0.7rem">Verificar</button>
+    </div>
+    <div id="desc-input-wrap" style="display:none">
+      <div class="desc-tipo-grid">
+        <div class="desc-tipo-btn active" id="desc-btn-pct" onclick="selTipoDesc('pct')">% Porcentaje</div>
+        <div class="desc-tipo-btn" id="desc-btn-monto" onclick="selTipoDesc('monto')">$ Monto fijo</div>
+      </div>
+      <div class="notas-wrap" style="margin-bottom:0.5rem"><label id="desc-label">Descuento (%)</label><input type="number" id="desc-valor" class="notas-inp" placeholder="0" oninput="aplicarDescuento()"/></div>
+      <div id="desc-resultado" style="font-size:0.85rem;color:var(--am);font-weight:700;text-align:center;padding:0.5rem 0"></div>
+    </div>
+  </div>
 </div>
 
 <div class="nav-bottom" id="nav-bar">
@@ -307,13 +286,14 @@ textarea.notas-inp{resize:none;min-height:90px;line-height:1.6}
 
 <script>
 var APPS_SCRIPT_URL='https://script.google.com/macros/s/AKfycbxNKTS1KmO4u3esEF-vBV-xGAeVtFXTqeqFKWQ8jQ73uzhHYZdYuO4-rNgC2xYsbM3a/exec';
-
+var PASS_DESCUENTO='Polo00jpi';
 var CFG={diecut:{plant:340,media:199},especial:{plant:440,media:220},sheet:{plant:390,media:390}};
 var DESCUENTO_DESDE=5,DESCUENTO_PCT=0.10,COSTO_ENVIO=169,PLANTILLA_AREA=4410;
 var PRESETS_STD=[{l:'4×4 cm',w:4,h:4},{l:'5×5 cm',w:5,h:5},{l:'6×6 cm',w:6,h:6},{l:'5×9 cm',w:5,h:9},{l:'7×7 cm',w:7,h:7},{l:'10×10 cm',w:10,h:10}];
 var PRESETS_SHEET=[{l:'Chica · 8×10 cm',w:8,h:10,ppp:32},{l:'Mediana · 10×15 cm',w:10,h:15,ppp:20},{l:'Grande · 21×15 cm',w:21,h:15,ppp:10}];
 var TABLA_DIECUT={3:100,4:80,5:70,6:60,7:50,8:35,9:30,10:28};
 var producto=null,acabado=null,efecto=null,envio=null,cantidad=null,step=1,historial=[];
+var tipoDescuento='pct',totalBase=0;
 
 function sinDescuento(nP){var cfg=CFG[producto],e=Math.floor(nP),m=(nP%1)>=0.5?1:0;return e*cfg.plant+m*cfg.media;}
 function conDescuento(nP){var base=sinDescuento(nP);return nP>=DESCUENTO_DESDE?Math.round(base*(1-DESCUENTO_PCT)):base;}
@@ -469,6 +449,8 @@ function mostrarResultado(){
   var nom=producto==='diecut'?'Vinil mate/brillante':producto==='especial'?'Efecto especial':'Sticker Sheet';
   var nomAcabado=producto==='especial'?(efecto==='holo'?'Holográfico':'Metálico')+' · '+(acabado==='mate'?'mate':'brillante'):(acabado==='mate'?'Laminado mate':'Laminado brillante');
 
+  totalBase=conDesc;
+
   var montoEl=document.getElementById('r-total');
   montoEl.classList.remove('count-anim');void montoEl.offsetWidth;
   montoEl.textContent='$'+conDesc.toLocaleString('es-MX');
@@ -484,6 +466,7 @@ function mostrarResultado(){
 
   document.getElementById('r-subtotal-row').style.display=hayDescuento?'flex':'none';
   document.getElementById('r-ahorro-row').style.display=hayDescuento?'flex':'none';
+  document.getElementById('r-desc-manual-row').style.display='none';
   if(hayDescuento){
     document.getElementById('r-subtotal').textContent='$'+sinDesc.toLocaleString('es-MX')+' MXN';
     document.getElementById('r-ahorro').textContent='-$'+ahorro.toLocaleString('es-MX')+' MXN';
@@ -497,21 +480,81 @@ function mostrarResultado(){
   diff.textContent=producto==='sheet'?'🎨 Varios diseños en una hoja · kisscut por diseño · vinil premium':producto==='especial'?'✨ Vinil efecto especial · diecut con borde kisscut · impacto visual único':'🦆 Diecut con borde kisscut incluido · vinil de alta durabilidad';
   document.getElementById('r-ship').textContent=envio==='dhl'?'🚚 Envío DHL a toda la república · 3–5 días hábiles':'📍 Recoger en taller CDMX · te avisamos cuando esté listo';
 
+  // Ocultar panel de descuento
+  document.getElementById('desc-panel').style.display='none';
+  document.getElementById('desc-pass').value='';
+  document.getElementById('desc-pass-wrap').style.display='block';
+  document.getElementById('desc-input-wrap').style.display='none';
+  document.getElementById('desc-valor').value='';
+
   guardarHistorial(a,h,conDesc,nom);
   registrarCotizacion();
 }
 
+// ── DESCUENTO MANUAL ─────────────────────────────────────
+function toggleDescPanel(){
+  var p=document.getElementById('desc-panel');
+  p.style.display=p.style.display==='none'||p.style.display===''?'block':'none';
+}
+
+function verificarDescuento(){
+  if(document.getElementById('desc-pass').value===PASS_DESCUENTO){
+    document.getElementById('desc-pass-wrap').style.display='none';
+    document.getElementById('desc-input-wrap').style.display='block';
+  } else {
+    document.getElementById('desc-pass').value='';
+    document.getElementById('desc-pass').placeholder='Contraseña incorrecta ❌';
+    setTimeout(function(){document.getElementById('desc-pass').placeholder='••••••';},2000);
+  }
+}
+
+function selTipoDesc(tipo){
+  tipoDescuento=tipo;
+  document.getElementById('desc-btn-pct').className='desc-tipo-btn'+(tipo==='pct'?' active':'');
+  document.getElementById('desc-btn-monto').className='desc-tipo-btn'+(tipo==='monto'?' active':'');
+  document.getElementById('desc-label').textContent=tipo==='pct'?'Descuento (%)':'Descuento ($)';
+  document.getElementById('desc-valor').value='';
+  document.getElementById('desc-resultado').textContent='';
+  aplicarDescuento();
+}
+
+function aplicarDescuento(){
+  var val=parseFloat(document.getElementById('desc-valor').value)||0;
+  var nuevoTotal=0;
+  if(tipoDescuento==='pct'){
+    nuevoTotal=Math.round(totalBase*(1-val/100));
+  } else {
+    nuevoTotal=Math.max(0,totalBase-val);
+  }
+  var ahorroDesc=totalBase-nuevoTotal;
+  var montoEl=document.getElementById('r-total');
+  montoEl.classList.remove('count-anim');void montoEl.offsetWidth;
+  montoEl.textContent='$'+nuevoTotal.toLocaleString('es-MX');
+  montoEl.classList.add('count-anim');
+  document.getElementById('r-unit').textContent='$'+(nuevoTotal/cantidad).toFixed(2)+' MXN por pieza';
+  if(val>0){
+    document.getElementById('r-desc-manual-row').style.display='flex';
+    document.getElementById('r-desc-manual').textContent='-$'+ahorroDesc.toLocaleString('es-MX')+' MXN';
+    document.getElementById('desc-resultado').textContent='Ahorro: $'+ahorroDesc.toLocaleString('es-MX')+' MXN';
+  } else {
+    document.getElementById('r-desc-manual-row').style.display='none';
+    document.getElementById('desc-resultado').textContent='';
+    montoEl.textContent='$'+totalBase.toLocaleString('es-MX');
+    document.getElementById('r-unit').textContent='$'+(totalBase/cantidad).toFixed(2)+' MXN por pieza';
+  }
+}
+
 function registrarCotizacion(){
   var data={
-    fecha:     new Date().toLocaleDateString('es-MX'),
-    cliente:   document.getElementById('nombre').value.trim()||'Sin nombre',
-    producto:  document.getElementById('r-producto').textContent,
-    acabado:   document.getElementById('r-acabado').textContent,
-    tamano:    document.getElementById('r-tam').textContent,
-    cantidad:  document.getElementById('r-cant').textContent,
+    fecha:new Date().toLocaleDateString('es-MX'),
+    cliente:document.getElementById('nombre').value.trim()||'Sin nombre',
+    producto:document.getElementById('r-producto').textContent,
+    acabado:document.getElementById('r-acabado').textContent,
+    tamano:document.getElementById('r-tam').textContent,
+    cantidad:document.getElementById('r-cant').textContent,
     plantillas:document.getElementById('r-plant').textContent,
-    envio:     document.getElementById('r-envio').textContent,
-    total:     document.getElementById('r-total').textContent
+    envio:document.getElementById('r-envio').textContent,
+    total:document.getElementById('r-total').textContent
   };
   var params=Object.keys(data).map(function(k){return k+'='+encodeURIComponent(data[k]);}).join('&');
   var img=new Image();
@@ -560,8 +603,23 @@ function generarImagen(){
           URL.revokeObjectURL(url);
         }
       },'image/png');
-    }).catch(function(err){if(nombreEl)nombreEl.remove();});
+    }).catch(function(){if(nombreEl)nombreEl.remove();});
   },100);
+}
+
+function reset(){
+  producto=null;acabado=null;efecto=null;cantidad=null;envio=null;totalBase=0;
+  document.getElementById('ancho').value=5;
+  document.getElementById('alto').value=5;
+  document.getElementById('cant-custom-inp').value='';
+  document.getElementById('notas').value='';
+  document.getElementById('nombre').value='';
+  document.getElementById('price-chip').style.display='none';
+  document.getElementById('cant-desc-badge').style.display='none';
+  document.querySelectorAll('.preset-btn').forEach(function(b){b.classList.remove('selected');});
+  document.querySelectorAll('.prod-card').forEach(function(b){b.classList.remove('selected');});
+  document.querySelectorAll('.acab-card').forEach(function(b){b.classList.remove('selected');});
+  showStep(1);
 }
 
 if('serviceWorker' in navigator){
