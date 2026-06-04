@@ -117,7 +117,7 @@ textarea.notas-inp{resize:none;min-height:90px;line-height:1.6}
 .btn-copy{background:var(--g2);color:var(--tx);border:1.5px solid var(--g3);border-radius:var(--r);padding:0.9rem;font-size:0.9rem;font-weight:700;width:100%;cursor:pointer;transition:all 0.15s}
 .btn-copy:active{transform:scale(0.98)}
 .btn-nueva{background:transparent;color:var(--tx2);border:none;padding:0.5rem;font-size:0.82rem;cursor:pointer;text-decoration:underline;text-underline-offset:3px;width:100%;text-align:center}
-#s7{padding-bottom:calc(2.5rem + env(safe-area-inset-bottom, 20px))}
+#s7{padding-bottom:calc(2.5rem + env(safe-area-inset-bottom, 20px));position:relative;z-index:10}
 .desc-panel{background:var(--g1);border:1.5px solid var(--g3);border-radius:var(--r2);padding:1rem;display:none}
 .desc-tipo-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:0.75rem}
 .desc-tipo-btn{background:var(--g2);color:var(--tx2);border:1.5px solid var(--g3);border-radius:var(--r3);padding:0.6rem;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.15s;text-align:center}
@@ -261,7 +261,7 @@ textarea.notas-inp{resize:none;min-height:90px;line-height:1.6}
     </div>
   </div>
   <button class="btn-wa" onclick="generarImagen()">🖼️ Compartir cotización como imagen</button>
-  <button class="btn-copy" onclick="location.href='https://wa.me/525510740625'">💬 Contactar a Japi por WhatsApp</button>
+  <button class="btn-copy" onclick="registrarCotizacion();location.href='https://wa.me/525510740625'">💬 Contactar a Japi por WhatsApp</button>
   <button class="btn-nueva" onclick="reset()">↩ Nueva cotización</button>
   <button class="btn-nueva" onclick="toggleDescPanel()" style="color:var(--tx3);font-size:0.75rem">+ Aplicar descuento</button>
   <div class="desc-panel" id="desc-panel">
@@ -426,7 +426,8 @@ function showStep(n){
   document.getElementById('s'+n).classList.add('visible');
   updateDots();
   var nav=document.getElementById('nav-bar'),back=document.getElementById('btn-back'),next=document.getElementById('btn-next');
-  nav.style.display=n===7?'none':'flex';
+  if(n===7){nav.style.visibility='hidden';nav.style.pointerEvents='none';nav.style.height='0';nav.style.padding='0';nav.style.border='none';}
+  else{nav.style.visibility='';nav.style.pointerEvents='';nav.style.height='';nav.style.padding='';nav.style.border='';nav.style.display='flex';}
   back.style.visibility=n===1?'hidden':'visible';
   if(n===1){next.disabled=!producto;renderHistorial();}
   else if(n===2){document.getElementById('efecto-section').style.display=producto==='especial'?'block':'none';next.disabled=!acabado||(producto==='especial'&&!efecto);}
@@ -489,7 +490,6 @@ function mostrarResultado(){
   document.getElementById('desc-valor').value='';
 
   guardarHistorial(a,h,conDesc,nom);
-  registrarCotizacion();
 }
 
 // ── DESCUENTO MANUAL ─────────────────────────────────────
